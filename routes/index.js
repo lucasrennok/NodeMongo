@@ -67,4 +67,35 @@ router.post('/rmvclient', function (req, res) {
     });
 })
 
+/* GET alteraclient page. */
+router.get('/alteraclient', function (req, res, next) {
+    res.render('alteraclient', { title: 'Altera Client' });
+});
+
+/* POST to alt Client Service */
+router.post('/altclient', function (req, res) {
+
+    var db = require("../db");
+    var clientCpf = req.body.cpf;
+
+    var alteracao = {};
+
+    req.body.cpfNovo == '' ? console.log('cpf não alterado') : alteracao.cpf = req.body.cpfNovo;
+    req.body.nomeNovo == '' ? console.log('nome nao alterado') : alteracao.name = req.body.nomeNovo;
+
+    var Clients = db.Mongoose.model('clientcollection', db.ClientSchema, 'clientcollection');
+    if(alteracao.name || alteracao.cpf){
+        Clients.findOneAndUpdate({cpf: clientCpf}, {$set: alteracao}, {new: false}, (err, doc) => {
+            if (err) {
+                console.log("Error! " + err.message);
+                return err;
+            }
+            else {
+                console.log("Post saved");
+            }
+        });
+    }
+    res.redirect("clientlist");
+})
+
 module.exports = router;
