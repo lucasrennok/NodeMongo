@@ -29,7 +29,7 @@ router.post('/addclient', function (req, res) {
     var clientName = req.body.name;
 
     var Clients = db.Mongoose.model('clientcollection', db.ClientSchema, 'clientcollection');
-    var client = new Clients({ cpf: clientCpf, email: clientName });
+    var client = new Clients({ cpf: clientCpf, name: clientName });
     client.save(function (err) {
         if (err) {
             console.log("Error! " + err.message);
