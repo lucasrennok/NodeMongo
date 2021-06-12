@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html lang="en">
+<head></head>
+<body>
+    <h1 class="text-center title-1"> Lista de Clientes </h1>
+    <ul>
+	<% clientlist.forEach(function(client){ %>
+		<li><%= client.name %></li>	
+	<%})%>
+    </ul>
+</body>
+</html>

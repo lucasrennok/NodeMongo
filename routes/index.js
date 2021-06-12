@@ -6,38 +6,38 @@ router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
 });
 
-/* GET userlist page. */
-router.get('/userlist', function(req, res) {
+/* GET clientlist page. */
+router.get('/clientlist', function(req, res) {
     var db = require("../db");
-    var Users = db.Mongoose.model('usercollection', db.UserSchema, 'usercollection');
-    Users.find({}).lean().exec(
+    var Clients = db.Mongoose.model('clientcollection', db.ClientSchema, 'clientcollection');
+    Clients.find({}).lean().exec(
        function (e, docs) {
-           res.render('userlist', { "userlist": docs });
+           res.render('clientlist', { "clientlist": docs });
        });
 });
 
-/* GET newuser page. */
-router.get('/newuser', function (req, res, next) {
-    res.render('newuser', { title: 'New User' });
+/* GET newclient page. */
+router.get('/newclient', function (req, res, next) {
+    res.render('newclient', { title: 'New Client' });
 });
 
-/* POST to Add User Service */
-router.post('/adduser', function (req, res) {
+/* POST to Add Client Service */
+router.post('/addclient', function (req, res) {
 
     var db = require("../db");
-    var userName = req.body.username;
-    var userEmail = req.body.useremail;
+    var clientCpf = req.body.cpf;
+    var clientName = req.body.name;
 
-    var Users = db.Mongoose.model('usercollection', db.UserSchema, 'usercollection');
-    var user = new Users({ username: userName, email: userEmail });
-    user.save(function (err) {
+    var Clients = db.Mongoose.model('clientcollection', db.ClientSchema, 'clientcollection');
+    var client = new Clients({ cpf: clientCpf, email: clientName });
+    client.save(function (err) {
         if (err) {
             console.log("Error! " + err.message);
             return err;
         }
         else {
             console.log("Post saved");
-            res.redirect("userlist");
+            res.redirect("clientlist");
         }
     });
 });

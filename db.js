@@ -1,10 +1,10 @@
 var mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost:27017/nodetest1');
+mongoose.connect('mongodb://localhost:27017/clients');
 
-var userSchema = new mongoose.Schema({
-    username: String,
-    email: String
-}, { collection: 'usercollection' }
+var clientSchema = new mongoose.Schema({
+    cpf: String,
+    name: String
+}, { collection: 'clientcollection' }
 );
 
-module.exports = { Mongoose: mongoose, UserSchema: userSchema }
+module.exports = { Mongoose: mongoose, ClientSchema: clientSchema }
