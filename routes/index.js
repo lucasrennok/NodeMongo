@@ -42,4 +42,29 @@ router.post('/addclient', function (req, res) {
     });
 });
 
+/* GET removeclient page. */
+router.get('/removeclient', function (req, res, next) {
+    res.render('removeclient', { title: 'Remove Client' });
+});
+
+/* POST to Rmv Client Service */
+router.post('/rmvclient', function (req, res) {
+
+    var db = require("../db");
+    var clientCpf = req.body.cpf;
+
+    var Clients = db.Mongoose.model('clientcollection', db.ClientSchema, 'clientcollection');
+    var client = Clients.find({ cpf: clientCpf });
+    client.remove(function (err) {
+        if (err) {
+            console.log("Error! " + err.message);
+            return err;
+        }
+        else {
+            console.log("Post saved");
+            res.redirect("clientlist");
+        }
+    });
+})
+
 module.exports = router;
