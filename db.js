@@ -1,10 +1,10 @@
 var mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost:27017/clients');
+mongoose.connect('mongodb://localhost:27017/prova');
 
-var clientSchema = new mongoose.Schema({
-    cpf: String,
-    name: String
-}, { collection: 'clientcollection' }
+var cidadeSchema = new mongoose.Schema({
+    cidade: String,
+    temp: String
+}, { collection: 'prova' }
 );
 
-module.exports = { Mongoose: mongoose, ClientSchema: clientSchema }
+module.exports = { Mongoose: mongoose, cidadeSchema: cidadeSchema }

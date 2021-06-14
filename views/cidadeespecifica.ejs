@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en">
+<head></head>
+<body>
+    <a href="/procuracidade">Voltar</a>
+    <h1 class="text-center title-1"> Cidade Encontrada </h1>
+    <ul>
+	<% cidadeespecifica.forEach(function(cidade){ %>
+		<li>Cidade: <%= cidade.cidade %> - Temperatura: <%= cidade.temp %></li>	
+	<%})%>
+    </ul>
+</body>
+</html>

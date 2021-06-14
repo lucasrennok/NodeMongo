@@ -1,101 +1,90 @@
 var express = require('express');
 var router = express.Router();
+const fetch = require("node-fetch");
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
 });
 
-/* GET clientlist page. */
-router.get('/clientlist', function(req, res) {
+/* GET cidadelist page. */
+router.get('/cidadelist', function(req, res) {
     var db = require("../db");
-    var Clients = db.Mongoose.model('clientcollection', db.ClientSchema, 'clientcollection');
-    Clients.find({}).lean().exec(
+    var cidades = db.Mongoose.model('prova', db.cidadeSchema, 'prova');
+    cidades.find({}).lean().exec(
        function (e, docs) {
-           res.render('clientlist', { "clientlist": docs });
+           res.render('cidadelist', { "cidadelist": docs });
        });
 });
 
-/* GET newclient page. */
-router.get('/newclient', function (req, res, next) {
-    res.render('newclient', { title: 'New Client' });
+router.get('/cidadeerro', function(req, res, next) {
+    res.render('cidadeerro', { title: 'Erro Cep procura' });
+  });
+
+router.get('/procuracidade', function(req, res, next) {
+    res.render('procuracidade', { title: 'Cep procura' });
+  });
+  
+/* POST to Add cidade Service */
+router.post('/searchcidade', function (req, res) {
+
+    // request
+    var db = require("../db");
+    var cep = req.body.cep;
+
+    var dataResp = undefined;
+    fetch(`https://viacep.com.br/ws/${encodeURIComponent(cep)}/json/`).then(function(resp){
+       return resp.json();
+    })
+    .then((jsonData) => {
+        dataResp = jsonData;
+        console.log(jsonData);
+        
+        var cidadeProcurar = dataResp.localidade;
+        console.log(cidadeProcurar)
+
+        var cidades = db.Mongoose.model('prova', db.cidadeSchema, 'prova');
+        var cidade = cidades.find({ cidade: cidadeProcurar });
+        cidade.lean().exec(
+            function (e, docs) {
+                console.log(docs)
+                if(docs.length == 0){
+                    res.redirect("cidadeerro");
+                }else{
+                    res.render('cidadeespecifica', { "cidadeespecifica": docs });
+                }
+            });
+    })
+    .catch(function(error) {
+        console.log(error);
+        res.redirect("cidadeerro");
+    });
 });
 
-/* POST to Add Client Service */
-router.post('/addclient', function (req, res) {
+/* GET newcidade page. */
+router.get('/newcidade', function (req, res, next) {
+    res.render('newcidade', { title: 'Nova cidade' });
+});
+
+/* POST to Add cidade Service */
+router.post('/addcidade', function (req, res) {
 
     var db = require("../db");
-    var clientCpf = req.body.cpf;
-    var clientName = req.body.name;
+    var cidadecidade = req.body.cidade;
+    var cidadetemp = req.body.temp;
 
-    var Clients = db.Mongoose.model('clientcollection', db.ClientSchema, 'clientcollection');
-    var client = new Clients({ cpf: clientCpf, name: clientName });
-    client.save(function (err) {
+    var cidades = db.Mongoose.model('prova', db.cidadeSchema, 'prova');
+    var cidade = new cidades({ cidade: cidadecidade, temp: cidadetemp });
+    cidade.save(function (err) {
         if (err) {
             console.log("Error! " + err.message);
             return err;
         }
         else {
             console.log("Post saved");
-            res.redirect("clientlist");
+            res.redirect("cidadelist");
         }
     });
 });
-
-/* GET removeclient page. */
-router.get('/removeclient', function (req, res, next) {
-    res.render('removeclient', { title: 'Remove Client' });
-});
-
-/* POST to Rmv Client Service */
-router.post('/rmvclient', function (req, res) {
-
-    var db = require("../db");
-    var clientCpf = req.body.cpf;
-
-    var Clients = db.Mongoose.model('clientcollection', db.ClientSchema, 'clientcollection');
-    var client = Clients.find({ cpf: clientCpf });
-    client.remove(function (err) {
-        if (err) {
-            console.log("Error! " + err.message);
-            return err;
-        }
-        else {
-            console.log("Post saved");
-            res.redirect("clientlist");
-        }
-    });
-})
-
-/* GET alteraclient page. */
-router.get('/alteraclient', function (req, res, next) {
-    res.render('alteraclient', { title: 'Altera Client' });
-});
-
-/* POST to alt Client Service */
-router.post('/altclient', function (req, res) {
-
-    var db = require("../db");
-    var clientCpf = req.body.cpf;
-
-    var alteracao = {};
-
-    req.body.cpfNovo == '' ? console.log('cpf não alterado') : alteracao.cpf = req.body.cpfNovo;
-    req.body.nomeNovo == '' ? console.log('nome nao alterado') : alteracao.name = req.body.nomeNovo;
-
-    var Clients = db.Mongoose.model('clientcollection', db.ClientSchema, 'clientcollection');
-    if(alteracao.name || alteracao.cpf){
-        Clients.findOneAndUpdate({cpf: clientCpf}, {$set: alteracao}, {new: false}, (err, doc) => {
-            if (err) {
-                console.log("Error! " + err.message);
-                return err;
-            }
-            else {
-                console.log("Post saved");
-            }
-        });
-    }
-    res.redirect("clientlist");
-})
 
 module.exports = router;

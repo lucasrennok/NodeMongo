@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en">
+<head></head>
+<body>
+    <a href="/">Voltar a Página inicial</a>
+    <h1 class="text-center title-1"> Lista de Cidades </h1>
+    <ul>
+	<% cidadelist.forEach(function(cidade){ %>
+		<li><%= cidade.cidade %></li>	
+	<%})%>
+    </ul>
+</body>
+</html>

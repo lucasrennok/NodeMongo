@@ -2,3 +2,5 @@
 
 Trabalho realizado para a matéria de desenvolvimento web.
 Utilizados de conhecimentos em MongoDb e criação de uma API com express.
+
+mongod --dbpath c:\Nodeprova\prova\data\
